@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: school-erp-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://menemanisha121:Manisha19@cluster0.qmnbjva.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        value: Mohit123
+      - key: EMAIL_USER
+        value: menemanisha121@gmail.com
+      - key: EMAIL_PASS
+        value: yhhqoqgdfzagxoxz
