@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tejasvi Vidya Mandir - Admin Dashboard</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #00ffc3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #1f1f1f;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #333;
+      text-align: left;
+    }
+
+    th {
+      background: #00ffc3;
+      color: #000;
+    }
+
+    td {
+      color: #ccc;
+    }
+
+    #logoutBtn {
+      float: right;
+      padding: 10px 20px;
+      margin-bottom: 10px;
+      background-color: #00ffc3;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="logoutBtn">Logout</button>
+  <h2>🧑‍🏫 Admin Dashboard - Admission Submissions</h2>
+
+  <table id="admissionTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="message" id="errorMsg"></div>
+
+  <script>
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+
+    async function fetchAdmission() {
+      try {
+        const res = await fetch("http://localhost:5000/api/admission", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          document.getElementById("errorMsg").textContent = "Session expired. Please login again.";
+          sessionStorage.removeItem("token");
+          setTimeout(() => window.location.href = "login.html", 2000);
+          return;
+        }
+
+        const data = await res.json();
+        const tableBody = document.querySelector("#admissionTable tbody");
+        tableBody.innerHTML = "";
+
+        data.forEach((student) => {
+          const row = `
+            <tr>
+              <td>${student.name}</td>
+              <td>${student.course}</td>
+              <td>${student.phone}</td>
+              <td>${student.email}</td>
+              <td>${student.message}</td>
+              <td>${new Date(student.date).toLocaleString()}</td>
+            </tr>
+          `;
+          tableBody.innerHTML += row;
+        });
+      } catch (err) {
+        document.getElementById("errorMsg").textContent = "Failed to load data.";
+      }
+    }
+
+    fetchAdmission();
+  </script>
+</body>
+</html>
