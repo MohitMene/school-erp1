@@ -5,6 +5,10 @@ const Student = require("../models/Student");
 const jwt = require("jsonwebtoken");
 const verifyToken = require("../middleware/authMiddleware");
 
+// 🔽 Add this: Public route for submitting admission form
+router.post("/", submitAdmission);
+
+
 // ✅ Now protected with token
 router.get("/", verifyToken, async (req, res) => {
   try {
