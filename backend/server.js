@@ -20,13 +20,13 @@ app.use("/api/admission", admissionRoutes);
 app.use("/api/auth", authRoutes);
 
 // Serve static frontend (Optional: for local full-stack testing)
-const frontendPath = path.join(__dirname, "../frontend");
-app.use(express.static(frontendPath));
+//const frontendPath = path.join(__dirname, "../frontend");
+//app.use(express.static(frontendPath));
 
 // Fallback to index.html (for single-page apps, optional)
-app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+//app.get(/^\/(?!api).*/, (req, res) => {
+  //res.sendFile(path.join(frontendPath, "index.html"));
+//});//
 
 
 // MongoDB URI and Port
