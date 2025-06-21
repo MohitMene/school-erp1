@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const razorpayRoutes = require("./routes/razorpayRoutes");
 const downloadRoutes = require("./routes/downloadRoutes");
 
+
 dotenv.config(); // Load environment variables
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/admission", admissionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/payment", razorpayRoutes); // 💰 Razorpay
 app.use("/api/download", downloadRoutes);
+
 
 // Serve static frontend (Optional: for local full-stack testing)
 //const frontendPath = path.join(__dirname, "../frontend");
