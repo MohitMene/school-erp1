@@ -1,26 +1,33 @@
-// screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { TextInput, Button, Card, Title, Text } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput, Button, Card, Title } from 'react-native-paper';
+import { saveToken } from '../utils/tokenStorage';
+import * as Animatable from 'react-native-animatable';
+import * as SecureStore from 'expo-secure-store';
+
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const login = async () => {
+    setLoading(true);
     try {
       const res = await fetch('https://school-erp1.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email, password }),
+        body: JSON.stringify({ username: email , password }),
       });
 
       const data = await res.json();
       console.log("🔐 Login response:", data);
+      console.log("Token type:", typeof data.token); // should say 'string'
+      
 
-      if (res.ok && data.token) {
-        await AsyncStorage.setItem('token', data.token);
+
+     if (res.ok && data.token) {
+       await saveToken('token', String(data.token));
         Alert.alert('✅ Login Successful', 'Navigating to Admission Form...');
         navigation.navigate('AdmissionForm');
       } else {
@@ -28,7 +35,9 @@ export default function LoginScreen({ navigation }) {
       }
     } catch (err) {
       console.error("❌ Network error:", err);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      Alert.alert('Error', 'Network issue. Try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,6 +53,7 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setEmail}
             mode="outlined"
             style={styles.input}
+            autoCapitalize="none"
           />
           <TextInput
             label="Password"
@@ -53,9 +63,17 @@ export default function LoginScreen({ navigation }) {
             mode="outlined"
             style={styles.input}
           />
-          <Button mode="contained" onPress={login} style={styles.button}>
+          <Animatable.View animation="pulse" iterationCount="infinite">
+          <Button
+            mode="contained"
+            onPress={login}
+            style={styles.button}
+            loading={loading}
+            disabled={loading}
+          >
             Login
           </Button>
+          </Animatable.View>
         </Card.Content>
       </Card>
     </View>
@@ -67,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f2f5',
   },
   card: {
     padding: 20,
@@ -79,7 +97,7 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 20,
     fontSize: 24,
-    alignSelf: 'center',
+    textAlign: 'center',
   },
   button: {
     marginTop: 10,

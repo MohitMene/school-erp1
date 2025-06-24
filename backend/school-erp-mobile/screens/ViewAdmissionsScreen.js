@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import * as Animatable from 'react-native-animatable';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,22 +15,54 @@ import {
   Text,
   Button,
 } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Linking from 'expo-linking';
+import { getToken } from '../utils/tokenStorage';
+import { useFocusEffect } from '@react-navigation/native';
+
+
+
 
 export default function ViewAdmissionsScreen({ navigation }) {
   const [admissions, setAdmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+     
+
+  // 🔐 Protect screen using token
+ // ✅ Log token directly from AsyncStorage
+  useFocusEffect(
+    useCallback(() => {
+      const debugToken = async () => {
+        const rawToken = await SecureStore.setItemAsync('token', String(data.token));
+        console.log("📱 DEBUG: Raw token from AsyncStorage:", rawToken);
+      };
+      debugToken();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const checkAuth = async () => {
+        const token = await getToken('token');
+        if (!token) {
+          Alert.alert('Session Expired', 'Please login again.');
+          navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+        }
+      };
+      checkAuth();
+    }, [])
+  );
 
   const fetchAdmissions = useCallback(async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await getToken('token');
       if (!token) {
         Alert.alert('Session Expired', 'Please login again.');
-        navigation.replace('Login'); // Protect route
+        navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
         return;
       }
+       console.log("🔐 Token being sent:", token);
+       
 
       const res = await fetch('https://school-erp1.onrender.com/api/admission', {
         method: 'GET',
@@ -54,15 +87,17 @@ export default function ViewAdmissionsScreen({ navigation }) {
     }
   }, [navigation]);
 
-  useEffect(() => {
-    fetchAdmissions();
-  }, [fetchAdmissions]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAdmissions();
+    }, [fetchAdmissions])
+  );
 
   const downloadExcel = async () => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await getToken('token');
     if (!token) {
       Alert.alert('Login required', 'Please login again');
-      navigation.replace('Login');
+      navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
       return;
     }
 
@@ -76,15 +111,17 @@ export default function ViewAdmissionsScreen({ navigation }) {
   };
 
   const renderItem = ({ item }) => (
+    <Animatable.View animation="fadeInUp" duration={600} delay={100}>
     <Card style={styles.card}>
       <Card.Content>
-        <Title>{item.name}</Title>
+        <Title>Hello Animated View</Title>
         <Paragraph>Email: {item.email}</Paragraph>
         <Paragraph>Phone: {item.phone}</Paragraph>
         <Paragraph>Course: {item.course}</Paragraph>
         <Paragraph>Message: {item.message}</Paragraph>
       </Card.Content>
     </Card>
+</Animatable.View>
   );
 
   return (

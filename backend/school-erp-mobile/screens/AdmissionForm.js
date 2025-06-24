@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollView, View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Card, Title } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
+import { deleteToken, getToken } from '../utils/tokenStorage';
+import * as Animatable from 'react-native-animatable';
+
 
 export default function AdmissionForm({ navigation }) {
   const [form, setForm] = useState({
@@ -10,6 +14,20 @@ export default function AdmissionForm({ navigation }) {
     course: '',
     message: '',
   });
+
+  // ✅ Protect screen by checking if token exists
+  useFocusEffect(
+    useCallback(() => {
+      const checkAuth = async () => {
+        const token = await getToken('token');
+        if (!token) {
+          Alert.alert('Session Expired', 'Please login again.');
+          navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+        }
+      };
+      checkAuth();
+    }, [])
+  );
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
@@ -34,6 +52,11 @@ export default function AdmissionForm({ navigation }) {
       console.error(err);
       Alert.alert('⚠️ Network Error', 'Please try again');
     }
+  };
+
+  const handleLogout = async () => {
+    await deleteToken('token');
+    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
   };
 
   return (
@@ -93,6 +116,18 @@ export default function AdmissionForm({ navigation }) {
           >
             📄 View Submissions
           </Button>
+
+          <Animatable.View animation="pulse" iterationCount="infinite">
+          <Button
+            mode="contained"
+            onPress={handleLogout}
+            style={styles.logoutButton}
+            buttonColor="#d32f2f"
+            textColor="white"
+          >
+            🔓 Logout
+          </Button>
+          </Animatable.View>
         </Card.Content>
       </Card>
     </ScrollView>
@@ -123,5 +158,8 @@ const styles = StyleSheet.create({
   viewButton: {
     marginTop: 10,
     borderColor: '#4CAF50',
+  },
+  logoutButton: {
+    marginTop: 20,
   },
 });
