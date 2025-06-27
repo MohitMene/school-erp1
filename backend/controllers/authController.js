@@ -1,17 +1,22 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const StudentLogin = require("../models/StudentLogin"); // 👈 create this model
-require("dotenv").config(); // Ensure .env is loaded
+const StudentLogin = require("../models/StudentLogin");
+require("dotenv").config();
 
-// ✅ Admin Login (existing)
+// ✅ Admin Login
 exports.loginAdmin = async (req, res) => {
   const { username, password } = req.body;
 
+  // Simple hardcoded admin check
   if (username === "admin" && password === "admin123") {
-    const token = jwt.sign({ username, role: "admin" }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { username, role: "admin" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
     return res.json({ success: true, token });
   } else {
-    return res.status(401).json({ success: false, message: "Invalid credentials" });
+    return res.status(401).json({ success: false, message: "Invalid admin credentials" });
   }
 };
 
@@ -30,8 +35,13 @@ exports.loginStudent = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid password" });
     }
 
+    // Generate token with role: "student"
     const token = jwt.sign(
-      { username: student.username, role: "student", studentId: student._id },
+      {
+        username: student.username,
+        role: "student",
+        studentId: student._id,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "2h" }
     );
@@ -43,7 +53,7 @@ exports.loginStudent = async (req, res) => {
   }
 };
 
-// ✅ Student Register (optional)
+// ✅ Student Register
 exports.registerStudent = async (req, res) => {
   const { username, password } = req.body;
 
