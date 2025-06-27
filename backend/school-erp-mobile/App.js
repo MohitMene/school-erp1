@@ -7,6 +7,10 @@ import LoginScreen from './screens/LoginScreen';
 import AdmissionForm from './screens/AdmissionForm';
 import PaymentScreen from './screens/PaymentScreen';
 import ViewAdmissionsScreen from './screens/ViewAdmissionsScreen';
+import StudentLoginScreen from './screens/StudentLoginScreen';
+import StudentDashboard from './screens/StudentDashboard'; // Create it next
+import StudentDashboardScreen from './screens/StudentDashboardScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +34,9 @@ export default function App() {
           <Stack.Screen name="AdmissionForm" component={AdmissionForm} />
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="ViewAdmissions" component={ViewAdmissionsScreen} />
+          <Stack.Screen name="StudentLogin" component={StudentLoginScreen} />
+          <Stack.Screen name="StudentDashboard" component={StudentDashboard} />
+          <Stack.Screen name="StudentDashboard" component={StudentDashboardScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

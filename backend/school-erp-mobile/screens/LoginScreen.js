@@ -73,6 +73,13 @@ export default function LoginScreen({ navigation }) {
           >
             Login
           </Button>
+          <Button
+            mode="outlined"
+            onPress={() => navigation.navigate('StudentLogin')}
+            style={{ marginTop: 10 }}
+          >
+           Student Login
+          </Button>
           </Animatable.View>
         </Card.Content>
       </Card>

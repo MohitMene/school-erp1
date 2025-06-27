@@ -4,10 +4,14 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
+
 const admissionRoutes = require("./routes/admissionRoutes");
 const authRoutes = require("./routes/authRoutes");
 const razorpayRoutes = require("./routes/razorpayRoutes");
 const downloadRoutes = require("./routes/downloadRoutes");
+const studentRoutes = require('./routes/studentRoutes');
+const marksRoutes = require('./routes/marksRoutes');
+
 
 
 dotenv.config(); // Load environment variables
@@ -23,6 +27,9 @@ app.use("/api/admission", admissionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/payment", razorpayRoutes); // 💰 Razorpay
 app.use("/api/download", downloadRoutes);
+app.use("/api/student", studentRoutes); // Student routes
+app.use('/api/marks', marksRoutes);
+
 
 
 // Serve static frontend (Optional: for local full-stack testing)
