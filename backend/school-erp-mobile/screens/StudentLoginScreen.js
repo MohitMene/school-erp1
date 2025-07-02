@@ -14,11 +14,9 @@ export default function StudentLoginScreen({ navigation }) {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/student/login', {
+      const res = await fetch('https://school-erp1.onrender.com/api/auth/student/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
 
@@ -26,14 +24,14 @@ export default function StudentLoginScreen({ navigation }) {
 
       if (res.ok && data.token) {
         await AsyncStorage.setItem('studentToken', data.token);
-        Alert.alert('Login Successful', 'Welcome student!');
+        Alert.alert('✅ Login Successful', 'Welcome student!');
         navigation.navigate('StudentDashboard');
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        Alert.alert('❌ Login Failed', data.message || 'Invalid credentials');
       }
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      Alert.alert('Error', 'Network request failed. Please check internet or backend.');
     }
   };
 
@@ -57,7 +55,7 @@ export default function StudentLoginScreen({ navigation }) {
       <Button mode="contained" onPress={handleLogin} style={styles.button}>
         Login
       </Button>
- </View>
+    </View>
   );
 }
 
