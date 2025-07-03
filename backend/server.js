@@ -11,6 +11,7 @@ const razorpayRoutes = require("./routes/razorpayRoutes");
 const downloadRoutes = require("./routes/downloadRoutes");
 const studentRoutes = require('./routes/studentRoutes');
 const marksRoutes = require('./routes/marksRoutes');
+const feeRoutes = require('./routes/feeRoutes');
  // Student profile routes
 
 
@@ -29,6 +30,7 @@ app.use("/api/payment", razorpayRoutes); // 💰 Razorpay
 app.use("/api/download", downloadRoutes);
 app.use("/api/student", studentRoutes); // Student routes
 app.use('/api/marks', marksRoutes);
+app.use('/api/fees', feeRoutes);
 
 
 
