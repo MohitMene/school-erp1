@@ -58,3 +58,6 @@ router.post('/pay', verifyStudentToken, async (req, res) => {
     res.status(500).json({ message: 'Payment failed' });
   }
 });
+module.exports = router; // ✅
+// Export the router to use in server.js
+// This allows the fee routes to be mounted in the main server file
