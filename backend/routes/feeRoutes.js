@@ -18,6 +18,7 @@ function verifyStudentToken(req, res, next) {
 // 🧾 GET /api/fees/student → view fee status
 router.get('/student', verifyStudentToken, async (req, res) => {
   try {
+    console.log("Decoded student username:", req.student.username); // 👈 Add here!
     const fee = await Fee.findOne({ studentUsername: req.student.username });
     if (!fee) return res.status(404).json({ message: 'Fee data not found' });
 
